@@ -1,0 +1,37 @@
+class Solution:
+    def minWindow(self, s: str, t: str) -> str:
+      if len(t) > len(s):
+        return ""
+
+      targetCount = collections.defaultdict(int)
+      for c in t:
+        targetCount[c] += 1
+
+      m = len(s)
+      requiredChars = len(targetCount)
+      matchedChars = 0
+      l = 0
+      mS = ""
+      ma = float('inf')
+      windowCount = collections.defaultdict(int)
+
+      for r in range(m):
+        char_r = s[r]
+        windowCount[char_r] += 1
+
+        if char_r in targetCount and windowCount[char_r] == targetCount[char_r]:
+            matchedChars += 1
+
+        while matchedChars== requiredChars and l <= r:
+            if r - l + 1 < ma:
+                ma = r - l + 1
+                mS = s[l:r + 1]
+
+            char_l = s[l]
+            if char_l in targetCount and windowCount[char_l] == targetCount[char_l]:
+                matchedChars -= 1
+
+            windowCount[char_l] -= 1
+            l += 1
+
+      return mS
