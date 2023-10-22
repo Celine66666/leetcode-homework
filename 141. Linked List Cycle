@@ -1,0 +1,13 @@
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        swift = head
+        leisure = head
+        
+        while swift and swift.next:
+            swift = swift.next.next
+            leisure = leisure.next
+            
+            if swift == leisure:
+                return True
+    
+        return False
