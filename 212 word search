@@ -1,0 +1,52 @@
+from typing import List
+from collections import defaultdict
+
+class TrieNode:
+    def __init__(self):
+        self.children = defaultdict(TrieNode)
+        self.isWord = False
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word: str):
+        node = self.root
+        for char in word:
+            node = node.children[char]
+        node.isWord = True
+
+class Solution:
+    def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
+        self.m, self.n = len(board), len(board[0])
+        self.board = board
+        self.result = set()
+        self.trie = Trie()
+        
+        for word in words:
+            self.trie.insert(word)
+        
+        for i in range(self.m):
+            for j in range(self.n):
+                self.dfs(i, j, self.trie.root, "")
+        
+        return list(self.result)
+    
+    def dfs(self, i: int, j: int, node: TrieNode, path: str):
+        if node.isWord:
+            self.result.add(path)
+            node.isWord = False  
+        
+        if not (0 <= i < self.m) or not (0 <= j < self.n) or self.board[i][j] == "#" or self.board[i][j] not in node.children:
+            return
+        
+        char = self.board[i][j]
+        self.board[i][j] = "#" 
+        for di, dj in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            ni, nj = i + di, j + dj
+            if 0 <= ni < self.m and 0 <= nj < self.n:
+                next_node = node.children.get(char)
+                if next_node:
+                    self.dfs(ni, nj, next_node, path + char)
+        
+        self.board[i][j] = char  
